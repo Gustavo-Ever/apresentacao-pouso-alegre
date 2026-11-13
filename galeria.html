@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Escolha a transição</title>
+<style>
+body{margin:0;background:#050d16;color:#F4F1EA;font-family:system-ui,Arial,sans-serif;padding:24px 16px}
+h1{margin:0 0 6px;font-size:24px}p{margin:0 0 20px;color:#9FB3C8}
+.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:20px}
+@media (max-width:480px){.g{grid-template-columns:1fr}}
+figure{margin:0;background:#0B1F33;border:1px solid #1E4568;border-radius:14px;overflow:hidden}
+.box{position:relative;width:100%;aspect-ratio:16/9}
+iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+figcaption{padding:12px 14px;font-size:16px}
+b{color:#19B5A5;font-size:18px;margin-right:6px}
+</style></head><body>
+<h1>Escolha a transição</h1>
+<p>Cada quadro passa os slides sozinho. Diga o número da que você quer.</p>
+<div class="g">
+<figure><div class="box"><iframe src="index.html?tr=cubo&auto=1#1" loading="lazy"></iframe></div><figcaption><b>1</b>Cubo 3D: o slide gira como a face de um cubo</figcaption></figure>
+<figure><div class="box"><iframe src="index.html?tr=gota&auto=1#1" loading="lazy"></iframe></div><figcaption><b>2</b>Gota: o próximo slide se abre num círculo que cresce</figcaption></figure>
+<figure><div class="box"><iframe src="index.html?tr=dobra&auto=1#1" loading="lazy"></iframe></div><figcaption><b>3</b>Carta: o slide vira como uma carta</figcaption></figure>
+<figure><div class="box"><iframe src="index.html?tr=tunel&auto=1#1" loading="lazy"></iframe></div><figcaption><b>4</b>Túnel: atravessa o slide e cai no próximo</figcaption></figure>
+<figure><div class="box"><iframe src="index.html?tr=lado&auto=1#1" loading="lazy"></iframe></div><figcaption><b>5</b>Lado (a atual): desliza para o lado em 3D</figcaption></figure>
+</div>
+</body></html>

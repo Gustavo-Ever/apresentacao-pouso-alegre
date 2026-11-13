@@ -166,6 +166,43 @@ body.empe{position:fixed;left:0;top:0;overflow:hidden}
 body.empe #fx,body.empe #flash{position:absolute}
 body.empe .nav,body.empe #hud,body.empe #dots,body.empe #bar,body.empe #notes,body.empe #dica{position:absolute}
 body.empe .toque{position:absolute}
+
+/* ================= TRANSIÇÕES (escolhidas por ?tr=) ================= */
+body[data-tr] #stage section.sai,body[data-tr] #stage section.entra{animation-duration:1s;animation-fill-mode:forwards;animation-timing-function:cubic-bezier(.65,0,.25,1)}
+/* 1. CUBO 3D */
+body[data-tr=cubo] #stage section.sai{transform-origin:100% 50%;animation-name:cuboSai}
+body[data-tr=cubo] #stage section.entra{transform-origin:0% 50%;animation-name:cuboEntra}
+body[data-tr=cubo] #stage section.sai.volta{transform-origin:0% 50%;animation-name:cuboSaiV}
+body[data-tr=cubo] #stage section.entra.volta{transform-origin:100% 50%;animation-name:cuboEntraV}
+@keyframes cuboSai{0%{transform:none;filter:none}50%{transform:translateX(-50%) translateZ(-500px) rotateY(-45deg)}100%{transform:translateX(-100%) rotateY(-90deg);filter:brightness(.25)}}
+@keyframes cuboEntra{0%{transform:translateX(100%) rotateY(90deg);filter:brightness(.25)}50%{transform:translateX(50%) translateZ(-500px) rotateY(45deg)}100%{transform:none;filter:none}}
+@keyframes cuboSaiV{0%{transform:none;filter:none}50%{transform:translateX(50%) translateZ(-500px) rotateY(45deg)}100%{transform:translateX(100%) rotateY(90deg);filter:brightness(.25)}}
+@keyframes cuboEntraV{0%{transform:translateX(-100%) rotateY(-90deg);filter:brightness(.25)}50%{transform:translateX(-50%) translateZ(-500px) rotateY(-45deg)}100%{transform:none;filter:none}}
+/* 2. GOTA: o próximo slide abre num círculo que cresce */
+body[data-tr=gota] #stage section.sai{animation-name:gotaFundo}
+body[data-tr=gota] #stage section.entra{animation-name:gotaAbre}
+body[data-tr=gota] #stage section.entra.volta{animation-name:gotaAbreV}
+@keyframes gotaFundo{to{transform:scale(.88);filter:brightness(.35) blur(6px)}}
+@keyframes gotaAbre{0%{clip-path:circle(0% at 92% 50%);transform:scale(1.15)}100%{clip-path:circle(120% at 92% 50%);transform:none}}
+@keyframes gotaAbreV{0%{clip-path:circle(0% at 8% 50%);transform:scale(1.15)}100%{clip-path:circle(120% at 8% 50%);transform:none}}
+/* 3. DOBRA: gira como uma carta */
+body[data-tr=dobra] #stage section.sai{animation-name:dobraSai;animation-duration:.55s;animation-timing-function:cubic-bezier(.5,0,1,.5)}
+body[data-tr=dobra] #stage section.entra{opacity:0;animation-name:dobraEntra;animation-duration:.6s;animation-delay:.5s;animation-timing-function:cubic-bezier(0,.5,.5,1)}
+body[data-tr=dobra] #stage section.sai.volta{animation-name:dobraSaiV}
+body[data-tr=dobra] #stage section.entra.volta{animation-name:dobraEntraV}
+@keyframes dobraSai{to{transform:rotateY(-90deg) scale(.9);filter:brightness(.4)}}
+@keyframes dobraEntra{0%{opacity:1;transform:rotateY(90deg) scale(.9);filter:brightness(.4)}100%{opacity:1;transform:none;filter:none}}
+@keyframes dobraSaiV{to{transform:rotateY(90deg) scale(.9);filter:brightness(.4)}}
+@keyframes dobraEntraV{0%{opacity:1;transform:rotateY(-90deg) scale(.9);filter:brightness(.4)}100%{opacity:1;transform:none;filter:none}}
+/* 4. TÚNEL: atravessa o slide para dentro do próximo */
+body[data-tr=tunel] #stage section.sai{animation-name:tunelSai}
+body[data-tr=tunel] #stage section.entra{animation-name:tunelEntra}
+body[data-tr=tunel] #stage section.sai.volta{animation-name:tunelSaiV}
+body[data-tr=tunel] #stage section.entra.volta{animation-name:tunelEntraV}
+@keyframes tunelSai{0%{transform:none;opacity:1;filter:none}100%{transform:scale(2.2);opacity:0;filter:blur(24px) brightness(1.6)}}
+@keyframes tunelEntra{0%{transform:scale(.4);opacity:0;filter:blur(20px)}100%{transform:none;opacity:1;filter:none}}
+@keyframes tunelSaiV{0%{transform:none;opacity:1}100%{transform:scale(.4);opacity:0;filter:blur(20px)}}
+@keyframes tunelEntraV{0%{transform:scale(2.2);opacity:0;filter:blur(24px)}100%{transform:none;opacity:1;filter:none}}
 </style></head><body>
 <canvas id="fx"></canvas>
 <div id="stage"><section id="cover" class="d" style="justify-content:center">
@@ -281,7 +318,8 @@ body.empe .toque{position:absolute}
 <div id="dots"></div><div id="bar"></div><div id="notes"></div>
 <div id="hud"><span id="n"></span><button id="bn" title="Notas (N)">Notas</button><button id="bf" title="Tela cheia (F)">Tela cheia</button></div>
 <div id="dica">Deslize ou use as setas</div>
-<script>const S=[...document.querySelectorAll('#stage section')];let i=-1,ocupado=false;
+<script>const Q=new URLSearchParams(location.search);const TRS=['lado','cubo','gota','dobra','tunel'];document.body.dataset.tr=TRS.includes(Q.get('tr'))?Q.get('tr'):'cubo';
+const S=[...document.querySelectorAll('#stage section')];let i=-1,ocupado=false;
 const $=id=>document.getElementById(id);
 const vib=ms=>{try{navigator.vibrate&&navigator.vibrate(ms)}catch(e){}};
 
@@ -313,7 +351,7 @@ function fit(){ROT=innerHeight>innerWidth*1.1;const bd=document.body;bd.classLis
 
 /* ---------- troca de slide com onda de água ---------- */
 function ativar(n,de,volta){S.forEach((s,j)=>{s.classList.remove('sai','entra','volta');if(j!==n&&j!==de)s.classList.remove('on')});const s=S[n];
- if(de!=null&&de!==n){const o=S[de];o.classList.toggle('volta',!!volta);s.classList.toggle('volta',!!volta);o.classList.add('sai');s.classList.add('on','entra');setTimeout(()=>{o.classList.remove('on','sai','volta');s.classList.remove('entra','volta')},900)}else s.classList.add('on');
+ if(de!=null&&de!==n){const o=S[de];o.classList.toggle('volta',!!volta);s.classList.toggle('volta',!!volta);o.classList.add('sai');s.classList.add('on','entra');setTimeout(()=>{o.classList.remove('on','sai','volta');s.classList.remove('entra','volta')},1150)}else s.classList.add('on');
  s.querySelectorAll('svg').forEach(v=>{try{v.setCurrentTime(0)}catch(e){}});
  [...$('dots').children].forEach((d,j)=>d.classList.toggle('on',j===n));
  $('bar').style.width=((n+1)/S.length*100)+'%';$('n').textContent=(n+1)+' / '+S.length;
@@ -326,7 +364,7 @@ function ativar(n,de,volta){S.forEach((s,j)=>{s.classList.remove('sai','entra','
  if(s.id==='eixo')setTimeout(()=>fx.anel(),500)}
 function show(n,sem){n=Math.max(0,Math.min(S.length-1,n));if(n===i||ocupado)return;const de=i;i=n;vib(12);
  if(sem||de<0){ativar(n);return}
- ocupado=true;ativar(n,de,n<de);setTimeout(()=>{ocupado=false},850)}
+ ocupado=true;ativar(n,de,n<de);setTimeout(()=>{ocupado=false},1150)}
 function raio(){if(S[i].id!=='problema')return;const f=$('flash');f.classList.remove('on');void f.offsetWidth;f.classList.add('on');vib([30,40,60])}
 
 /* ---------- partículas: chuva, bolhas, faíscas ---------- */
@@ -365,10 +403,13 @@ addEventListener('keydown',e=>{const k=e.key;
  else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(k)){e.preventDefault();show(i-1)}
  else if(k==='Home')show(0);else if(k==='End')show(S.length-1);
  else if(k==='f'||k==='F')tela();else if(k==='n'||k==='N')document.body.classList.toggle('notas');
+ else if(k==='t'||k==='T'){const a=TRS.indexOf(document.body.dataset.tr);document.body.dataset.tr=TRS[(a+1)%TRS.length];$('dica').textContent='Transição: '+document.body.dataset.tr;$('dica').classList.add('on');setTimeout(()=>$('dica').classList.remove('on'),1500)}
  else if(k==='h'||k==='H')document.body.classList.toggle('limpo');});
 addEventListener('pointerdown',e=>{ligarGiro();const t=document.createElement('div');t.className='toque';const q=loc(e.clientX,e.clientY);t.style.left=q.x+'px';t.style.top=q.y+'px';document.body.appendChild(t);setTimeout(()=>t.remove(),800)});
 let tx=null,ty=null;addEventListener('touchstart',e=>{const q=loc(e.touches[0].clientX,e.touches[0].clientY);tx=q.x;ty=q.y},{passive:true});
 addEventListener('touchend',e=>{if(tx===null)return;const q=loc(e.changedTouches[0].clientX,e.changedTouches[0].clientY),dx=q.x-tx,dy=q.y-ty;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy))show(dx<0?i+1:i-1);tx=null});
 fit();show(Math.max(0,(parseInt(location.hash.slice(1))||1)-1),true);
 setTimeout(()=>{$('dica').classList.add('on');setTimeout(()=>$('dica').classList.remove('on'),3200)},1500);
+
+if(Q.get('auto')){document.body.classList.add('limpo');setInterval(()=>show(i+1>=S.length?0:i+1),3200)}
 </script></body></html>
