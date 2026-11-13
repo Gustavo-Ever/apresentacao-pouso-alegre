@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pouso Alegre: Gestão Inteligente de Riscos</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+:root{--navy:#0B1F33;--ink:#102A43;--paper:#F4F1EA;--teal:#19B5A5;--teald:#0E7C73;--amber:#FFB020;--mist:#9FB3C8}
+.d,.l{font-family:'Inter',sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px}
+.d{background:var(--navy);color:var(--paper)}
+.l{background:var(--paper);color:var(--ink)}
+h1,h2,h3,.big{font-family:'Space Grotesk',sans-serif;margin:0}
+h1{font-size:176px;line-height:1;font-weight:700}
+h2{font-size:88px;line-height:1.1;font-weight:700}
+h3{font-size:44px;line-height:1.2;font-weight:700}
+p{font-size:36px;line-height:1.35;margin:0}
+.kick{font-size:28px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--teal)}
+.l .kick{color:var(--teald)}
+.row{display:flex;gap:40px}
+.card{flex:1;padding:48px;border-radius:24px;background:#fff;display:flex;flex-direction:column;gap:20px}
+.d .card{background:#132F4A}
+.big{font-size:128px;font-weight:700;line-height:1;color:var(--teal)}
+.l .big{color:var(--teald)}
+.amb{color:var(--amber)}
+.sub{color:var(--mist)}
+.l .sub{color:#486581}
+.foot{position:absolute;bottom:64px;left:128px;font-size:24px;color:var(--mist)}
+.wave{position:absolute;left:0;bottom:0;width:1920px;height:240px}
+.ar{font-family:'Space Grotesk',sans-serif;font-size:96px;color:var(--amber);align-self:center}
+.photo{width:760px;height:600px;border-radius:24px;border:4px dashed var(--teal);display:flex;align-items:center;justify-content:center;text-align:center;padding:48px;font-size:32px;color:var(--mist);flex:none}
+.cap{font-size:24px;color:var(--mist)}
+.tag{display:inline-block;padding:12px 28px;border-radius:999px;background:var(--teal);color:var(--navy);font-size:28px;font-weight:600}
+.row .tag+.tag{margin-left:0}
+.st{font-size:30px;line-height:1.35;margin:0;color:#486581}
+.d .st{color:var(--mist)}
+.sm{font-size:64px}
+
+html,body{margin:0;height:100%;background:#050d16;overflow:hidden}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center}
+#stage section{position:absolute;inset:0;width:1920px;height:1080px;box-sizing:border-box;overflow:hidden;display:flex;opacity:0;visibility:hidden;transform:translateX(80px);transition:opacity .6s ease,transform .6s ease,visibility 0s .6s}
+#stage section.on{opacity:1;visibility:visible;transform:none;transition:opacity .6s ease,transform .6s ease,visibility 0s}
+#stage section.back{transform:translateX(-80px)}
+aside{display:none}
+.d,.l{font-family:'Inter',system-ui,Arial,sans-serif}
+h1,h2,h3,.big,.ar{font-family:'Space Grotesk','Inter',system-ui,Arial,sans-serif}
+.a{opacity:0;transform:translateY(40px)}
+section.on .a{animation:sobe .7s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:calc(var(--k) * 140ms + 200ms)}
+section.on .card.a{animation-name:sobeCard}
+section.on .ar.a{animation-name:seta}
+section.on .card .big{animation:pop .8s cubic-bezier(.2,.7,.2,1) both;animation-delay:inherit}
+@keyframes sobe{to{opacity:1;transform:none}}
+@keyframes sobeCard{0%{opacity:0;transform:translateY(60px) scale(.96)}100%{opacity:1;transform:none}}
+@keyframes pop{0%{opacity:0;transform:scale(.6)}70%{opacity:1;transform:scale(1.06)}100%{opacity:1;transform:none}}
+@keyframes seta{0%{opacity:0;transform:translateX(-30px)}100%{opacity:1;transform:none}}
+.wave path{animation:onda 6s ease-in-out infinite alternate}
+.wave path+path{animation-duration:4.5s}
+@keyframes onda{to{transform:translateX(-60px)}}
+.nav{position:fixed;top:50%;transform:translateY(-50%);width:56px;height:56px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;font:32px/56px system-ui;cursor:pointer;z-index:10;backdrop-filter:blur(6px);transition:background .2s,opacity .2s}
+.nav:hover{background:rgba(25,181,165,.85)}
+.nav:disabled{opacity:.2;cursor:default;background:rgba(255,255,255,.14)}
+#prev{left:16px}#next{right:16px}
+#bar{position:fixed;left:0;bottom:0;height:5px;width:0;background:#19B5A5;transition:width .5s ease;z-index:10}
+#hud{position:fixed;right:16px;bottom:14px;display:flex;gap:10px;align-items:center;font:14px system-ui;color:#9FB3C8;z-index:10;transition:opacity .2s}
+#hud button{border:0;background:rgba(255,255,255,.12);color:#fff;border-radius:8px;padding:6px 10px;font:13px system-ui;cursor:pointer}
+#hud button:hover{background:rgba(25,181,165,.85)}
+#dots{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);display:flex;gap:8px;z-index:10;transition:opacity .2s}
+#dots i{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.25);cursor:pointer;transition:all .3s}
+#dots i.on{background:#19B5A5;width:28px;border-radius:6px}
+#notes{position:fixed;left:16px;right:16px;bottom:48px;margin:auto;max-width:900px;background:rgba(5,13,22,.92);color:#F4F1EA;font:18px/1.4 system-ui;padding:14px 18px;border-radius:12px;border:1px solid #19B5A5;display:none;z-index:11}
+body.notas #notes{display:block}
+body.limpo .nav,body.limpo #hud,body.limpo #dots{opacity:0}
+body.limpo .nav:hover,body.limpo #hud:hover,body.limpo #dots:hover{opacity:1}
+@media (max-width:700px){#hud span{display:none}#dots{display:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.a{opacity:1;transform:none}}
+</style></head><body>
+<div id="stage"><section id="cover" class="d" style="justify-content:center">
+<p class="a kick">Observatório Acadêmico de Cidades Inteligentes do Sul de Minas · 2026</p>
+<h1 class="a">Pouso Alegre</h1>
+<h3 style="color:#FFB020;font-size:56px" class="a">Quando a tecnologia chega antes da chuva</h3>
+<p class="a">Gestão inteligente de riscos e alertas de enchentes</p>
+<p class="a sub">Leonardo Bertoli · Valentina Marangão · Diúllia Maria</p>
+<svg class="a wave" viewBox="0 0 1920 240" aria-label="Ondas de água"><path d="M0 120 C240 40 480 200 720 120 S1200 40 1440 120 S1760 180 1920 100 V240 H0Z" fill="#19B5A5" opacity=".35"/><path d="M0 170 C240 100 480 240 720 170 S1200 100 1440 170 S1760 220 1920 160 V240 H0Z" fill="#19B5A5"/></svg>
+<aside>Apresentar a equipe, o município e o tema.</aside>
+</section>
+<section id="municipio" class="l">
+<p class="a kick">Conhecendo o município</p>
+<h2 class="a">Pouso Alegre, Sul de Minas</h2>
+<div class="row">
+<div class="a card"><div class="big">152.217</div><h3>habitantes</h3><p class="st">Censo 2022, IBGE</p></div>
+<div class="a card"><div class="big">543 km²</div><h3>de território</h3><p class="st">Cortado pelo Rio Sapucaí e afluentes</p></div>
+<div class="a card"><div class="big">Polo</div><h3>regional</h3><p class="st">Classificada pelo IBGE como capital regional: atrai serviços de saúde e ensino</p></div>
+</div>
+<p class="a">Uma cidade que cresce, e que convive com rios que podem transbordar.</p>
+<p class="a foot sub">Fonte: IBGE, Cidades e Estados</p>
+<aside>Gentílico: pouso-alegrense. Aniversário da cidade: 19 de outubro.</aside>
+</section>
+<section id="iniciativa" class="l">
+<p class="a kick">A iniciativa</p>
+<h2 class="a">Defesa Civil + geotecnologia</h2>
+<div class="row">
+<div class="a card"><h3>Geopixel Monitor</h3><p>Plataforma de monitoramento e alertas</p></div>
+<div class="a card"><h3>Centro de Riscos e Alertas</h3><p>Central que acompanha a cidade todos os dias</p></div>
+<div class="a card"><h3>Prêmio InovaCidade 2025</h3><p>Reconhecimento nacional</p></div>
+</div>
+<aside>Projeto da Prefeitura, premiado em 2025 pelo Instituto Smart City Business America.</aside>
+</section>
+<section id="problema" class="d">
+<p class="a kick">O problema</p>
+<div class="row" style="align-items:center">
+<div style="display:flex;flex-direction:column;gap:32px;flex:1" class="a">
+<h2 style="font-size:104px">Chuva forte.<br>Rios cheios.<br><span class="amb">Pouco tempo.</span></h2>
+<p>Enchentes colocam vidas em risco, interditam vias e atingem bairros inteiros.</p>
+<p class="sub">Sem previsão, a cidade só reage depois do dano.</p>
+</div>
+<svg viewBox="0 0 760 600" width="760" height="600" style="flex:none;border-radius:24px" aria-label="Ilustração animada de enchente: chuva forte, rio subindo e casas sendo cobertas pela água" class="a"><defs><clipPath id="cp"><rect width="760" height="600" rx="24"/></clipPath><pattern id="r" width="50" height="60" patternUnits="userSpaceOnUse"><path d="M30 6 l-6 22" stroke="#9FB3C8" stroke-width="3" stroke-linecap="round"/></pattern></defs><g clip-path="url(#cp)"><rect width="760" height="600" fill="#132F4A"/><ellipse cx="150" cy="70" rx="130" ry="46" fill="#1E4568"/><ellipse cx="330" cy="50" rx="110" ry="40" fill="#1E4568"/><ellipse cx="560" cy="85" rx="150" ry="48" fill="#1E4568"/><rect y="-60" width="760" height="560" fill="url(#r)" opacity=".7"><animateTransform attributeName="transform" type="translate" values="0 0;0 60" dur="0.7s" repeatCount="indefinite"/></rect><rect y="450" width="760" height="150" fill="#0A1A2B"/><rect x="70" y="360" width="140" height="90" fill="#2F6190"/><polygon points="60,360 140,300 220,360" fill="#3F77AB"/><rect x="100" y="385" width="28" height="28" fill="#FFB020"/><rect x="150" y="400" width="30" height="50" fill="#0B1F33"/><rect x="300" y="360" width="140" height="90" fill="#2F6190"/><polygon points="290,360 370,300 450,360" fill="#3F77AB"/><rect x="330" y="385" width="28" height="28" fill="#FFB020"/><rect x="380" y="400" width="30" height="50" fill="#0B1F33"/><rect x="530" y="360" width="140" height="90" fill="#2F6190"/><polygon points="520,360 600,300 680,360" fill="#3F77AB"/><rect x="560" y="385" width="28" height="28" fill="#FFB020"/><rect x="610" y="400" width="30" height="50" fill="#0B1F33"/><g><animateTransform attributeName="transform" type="translate" values="0 110;0 0" dur="6s" fill="freeze"/><g transform="translate(0,402)"><g><animateTransform attributeName="transform" type="translate" values="0 0;-760 0" dur="7s" repeatCount="indefinite"/><path d="M0 0 q47.5 -22 95 0 t95 0 t95 0 t95 0 t95 0 t95 0 t95 0 t95 0 t95 0 t95 0 t95 0 t95 0 t95 0 t95 0 t95 0 t95 0 V400 H0Z" fill="#1796A0" opacity=".65"/></g></g></g><g><animateTransform attributeName="transform" type="translate" values="0 100;0 0" dur="6s" fill="freeze"/><g transform="translate(0,424)"><g><animateTransform attributeName="transform" type="translate" values="-760 0;0 0" dur="5s" repeatCount="indefinite"/><path d="M0 0 q47.5 -22 95 0 t95 0 t95 0 t95 0 t95 0 t95 0 t95 0 t95 0 t95 0 t95 0 t95 0 t95 0 t95 0 t95 0 t95 0 t95 0 V400 H0Z" fill="#19B5A5"/></g></g></g><g><polygon points="690,20 724,78 656,78" fill="#FFB020"/><text x="690" y="68" font-size="36" font-weight="700" text-anchor="middle" fill="#0B1F33">!</text><animate attributeName="opacity" values="1;0.35;1" dur="1.4s" repeatCount="indefinite"/></g></g></svg>
+</div>
+
+<aside>Mostrar a foto e contar o problema: eventos extremos mais frequentes e imprevisíveis.</aside>
+</section>
+<section id="solucao" class="l">
+<p class="a kick">A solução</p>
+<h2 class="a">Prever antes de reagir</h2>
+<div class="row" style="align-items:stretch">
+<div class="a card"><div class="big">1</div><h3>Monitorar</h3><p class="st">Áreas críticas acompanhadas continuamente, em 3 sub-bacias: Mandu, Sapucaí-Mirim e Sapucaí</p></div>
+<div class="a ar">→</div>
+<div class="a card"><div class="big">2</div><h3>Prever</h3><p class="st">Modelos antecipam chuvas intensas com até 7 dias de antecedência</p></div>
+<div class="a ar">→</div>
+<div class="a card"><div class="big">3</div><h3>Alertar</h3><p class="st">Mais de 500 alertas por ano, com níveis de risco diferentes</p></div>
+</div>
+<p class="a foot sub">Fonte: Prefeitura de Pouso Alegre</p>
+<aside>Tudo é acompanhado no Centro de Gerenciamento de Riscos e Alertas.</aside>
+</section>
+<section id="tecnologia" class="d">
+<p class="a kick">Tecnologia e inovação</p>
+<h2 class="a">Dados em tempo real</h2>
+<div class="row">
+<div class="a card"><h3>Satélites</h3><p class="st">Imagens para acompanhar o território</p></div>
+<div class="a card"><h3>Sensores</h3><p class="st">Medições ambientais em tempo real</p></div>
+<div class="a card"><h3>Modelos preditivos</h3><p class="st">Previsão de eventos extremos</p></div>
+<div class="a card"><h3>App de campo</h3><p class="st">Defesa Civil registra ocorrências com localização</p></div>
+</div>
+<div class="row"><span class="a tag">SaaS (nuvem)</span><span class="a tag">Georreferenciamento</span><span class="a tag">Relatórios automáticos</span></div>
+<aside>SaaS: o software é acessado pela internet e mantido pelo fornecedor.</aside>
+</section>
+<section id="eixo" class="d" style="justify-content:center">
+<p class="a kick">Eixo de Cidade Inteligente</p>
+<h1 class="a amb" style="font-size:200px">Segurança</h1>
+<p class="a">Proteger vidas com planejamento e tecnologia.</p>
+<p class="a sub">Também toca: Meio Ambiente · Saneamento · Governança</p>
+<aside>Escolhemos um eixo principal, mas a iniciativa conversa com outros.</aside>
+</section>
+<section id="beneficios" class="l">
+<p class="a kick">Benefícios</p>
+<h2 class="a">Quem ganha e quanto</h2>
+<div class="row">
+<div class="a card"><div class="big">7 dias</div><p class="st">de antecedência na previsão de chuvas</p></div>
+<div class="a card"><div class="big">+500</div><p class="st">alertas emitidos por ano</p></div>
+<div class="a card"><div class="big">3</div><p class="st">sub-bacias monitoradas</p></div>
+</div>
+<div class="row"><span class="a tag">Moradores de áreas de risco</span><span class="a tag">Equipes da Defesa Civil</span><span class="a tag">Toda a cidade</span></div>
+<p class="a foot sub">Dados divulgados pela Prefeitura de Pouso Alegre</p>
+<aside>Os números vêm da própria Prefeitura. Seria bom medir o impacto de forma independente.</aside>
+</section>
+<section id="analise" class="l">
+<p class="a kick">Análise da equipe</p>
+<h2 class="a">Por que é uma cidade inteligente?</h2>
+<div class="row">
+<div class="a card"><h3>Previne, não só reage</h3><p class="st">Dados orientam a decisão antes do desastre</p></div>
+<div class="a card"><h3>Integra ferramentas</h3><p class="st">Satélite, sensores e app em um único centro</p></div>
+<div class="a card"><h3>Pode ser replicada</h3><p class="st">Outras cidades do Sapucaí também sofrem com cheias</p></div>
+</div>
+<p class="a">Atenção: exige investimento, equipe treinada e continuidade.</p>
+<aside>Citar a limitação: resultados divulgados pela Prefeitura.</aside>
+</section>
+<section id="conclusao" class="d" style="justify-content:center">
+<p class="a kick">Conclusão</p>
+<h2 style="font-size:112px" class="a">Cidade inteligente é usar a informação para <span class="amb">proteger pessoas.</span></h2>
+<p class="a sub">Obrigado! Perguntas?</p>
+<aside>Principais aprendizados: pesquisar fontes confiáveis, ligar problema, solução e benefício.</aside>
+</section>
+</div><button class="nav" id="prev" aria-label="Slide anterior">&#8249;</button>
+<button class="nav" id="next" aria-label="Próximo slide">&#8250;</button>
+<div id="dots"></div><div id="bar"></div><div id="notes"></div>
+<div id="hud"><span id="n"></span><button id="bn" title="Notas do apresentador (N)">Notas</button><button id="bf" title="Tela cheia (F)">Tela cheia</button></div>
+<script>
+const S=[...document.querySelectorAll('#stage section')];let i=-1;
+const $=id=>document.getElementById(id);
+S.forEach((s,j)=>{let k=0;s.querySelectorAll('.a').forEach(el=>el.style.setProperty('--k',k++));const d=document.createElement('i');d.title='Slide '+(j+1);d.onclick=()=>show(j);$('dots').appendChild(d)});
+function fit(){const k=Math.min(innerWidth/1920,innerHeight/1080);$('stage').style.transform='translate(-50%,-50%) scale('+k+')'}
+function show(n){n=Math.max(0,Math.min(S.length-1,n));if(n===i)return;const volta=n<i;i=n;
+ S.forEach((s,j)=>{s.classList.toggle('back',volta&&j!==i);if(j===i){s.classList.remove('on');void s.offsetWidth;s.classList.add('on');s.querySelectorAll('svg').forEach(v=>{try{v.setCurrentTime(0)}catch(e){}})}else s.classList.remove('on')});
+ [...$('dots').children].forEach((d,j)=>d.classList.toggle('on',j===i));
+ $('bar').style.width=((i+1)/S.length*100)+'%';$('n').textContent=(i+1)+' / '+S.length;
+ $('prev').disabled=i===0;$('next').disabled=i===S.length-1;
+ const a=S[i].querySelector('aside');$('notes').textContent=a?a.textContent:'';
+ try{history.replaceState(null,'','#'+(i+1))}catch(e){}}
+function tela(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{})}
+$('prev').onclick=()=>show(i-1);$('next').onclick=()=>show(i+1);
+$('bf').onclick=tela;$('bn').onclick=()=>document.body.classList.toggle('notas');
+addEventListener('resize',fit);
+addEventListener('keydown',e=>{const k=e.key;
+ if(['ArrowRight','ArrowDown',' ','PageDown','Enter'].includes(k)){e.preventDefault();show(i+1)}
+ else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(k)){e.preventDefault();show(i-1)}
+ else if(k==='Home')show(0);else if(k==='End')show(S.length-1);
+ else if(k==='f'||k==='F')tela();else if(k==='n'||k==='N')document.body.classList.toggle('notas');
+ else if(k==='h'||k==='H')document.body.classList.toggle('limpo');});
+let tx=null;addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)show(dx<0?i+1:i-1);tx=null});
+fit();show(Math.max(0,(parseInt(location.hash.slice(1))||1)-1));
+</script></body></html>
