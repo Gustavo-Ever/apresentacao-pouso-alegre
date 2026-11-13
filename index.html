@@ -318,7 +318,7 @@ body[data-tr=tunel] #stage section.entra.volta{animation-name:tunelEntraV}
 <div id="dots"></div><div id="bar"></div><div id="notes"></div>
 <div id="hud"><span id="n"></span><button id="bn" title="Notas (N)">Notas</button><button id="bf" title="Tela cheia (F)">Tela cheia</button></div>
 <div id="dica">Deslize ou use as setas</div>
-<script>const Q=new URLSearchParams(location.search);const TRS=['lado','cubo','gota','dobra','tunel'];document.body.dataset.tr=TRS.includes(Q.get('tr'))?Q.get('tr'):'cubo';
+<script>const Q=new URLSearchParams(location.search);const TRS=['lado','cubo','gota','dobra','tunel'];document.body.dataset.tr=TRS.includes(Q.get('tr'))?Q.get('tr'):'gota';
 const S=[...document.querySelectorAll('#stage section')];let i=-1,ocupado=false;
 const $=id=>document.getElementById(id);
 const vib=ms=>{try{navigator.vibrate&&navigator.vibrate(ms)}catch(e){}};
