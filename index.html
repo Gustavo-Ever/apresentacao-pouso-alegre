@@ -203,6 +203,31 @@ body[data-tr=tunel] #stage section.entra.volta{animation-name:tunelEntraV}
 @keyframes tunelEntra{0%{transform:scale(.4);opacity:0;filter:blur(20px)}100%{transform:none;opacity:1;filter:none}}
 @keyframes tunelSaiV{0%{transform:none;opacity:1}100%{transform:scale(.4);opacity:0;filter:blur(20px)}}
 @keyframes tunelEntraV{0%{transform:scale(2.2);opacity:0;filter:blur(24px)}100%{transform:none;opacity:1;filter:none}}
+
+/* ---------- celular: versão leve (o Safari do iPhone fechava a página no slide 6 por falta de memória) ---------- */
+@media (pointer:coarse){
+ .card,.d .card,.nav{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;will-change:auto;transform-style:flat}
+ .card>*{transform:none}
+ .d .card{background:#163a5c}
+ .d .card::before{animation:none;display:none}
+ .card::after{display:none}
+ .d::before,.l::before{animation:none}
+ .tag{animation:none}
+ .big{animation:none}
+ #flash{mix-blend-mode:normal}
+}
+@media (pointer:coarse){
+@keyframes sobe{0%{opacity:0;transform:translateY(50px)}100%{opacity:1;transform:none}}
+@keyframes palavra{0%{opacity:0;transform:translateY(.7em) rotateX(-80deg) scale(.9)}100%{opacity:1;transform:none}}
+@keyframes cardIn{0%{opacity:0;transform:translateY(120px) rotateX(35deg) scale(.85)}100%{opacity:1;transform:none}}
+@keyframes gotaFundo{to{transform:scale(.88);filter:brightness(.35)}}
+@keyframes saiEsq{0%{transform:none;filter:none}100%{transform:translateX(-100%) rotateY(28deg) scale(.82);filter:brightness(.4)}}
+@keyframes saiDir{0%{transform:none;filter:none}100%{transform:translateX(100%) rotateY(-28deg) scale(.82);filter:brightness(.4)}}
+@keyframes tunelSai{0%{transform:none;opacity:1;filter:none}100%{transform:scale(2.2);opacity:0;filter:brightness(1.6)}}
+@keyframes tunelEntra{0%{transform:scale(.4);opacity:0}100%{transform:none;opacity:1;filter:none}}
+@keyframes tunelSaiV{0%{transform:none;opacity:1}100%{transform:scale(.4);opacity:0}}
+@keyframes tunelEntraV{0%{transform:scale(2.2);opacity:0}100%{transform:none;opacity:1;filter:none}}
+}
 </style></head><body>
 <canvas id="fx"></canvas>
 <div id="stage"><section id="cover" class="d" style="justify-content:center">
@@ -347,7 +372,7 @@ function fit(){ROT=innerHeight>innerWidth*1.1;const bd=document.body;bd.classLis
  if(ROT){bd.style.width=LW+'px';bd.style.height=LH+'px';bd.style.transformOrigin='0 0';bd.style.transform='rotate(90deg) translateY(-100%)'}
  else{bd.style.width='';bd.style.height='';bd.style.transform=''}
  const k=Math.min(LW/1920,LH/1080);$('stage').style.transform='translate(-50%,-50%) scale('+k+')';
- const c=$('fx'),r=devicePixelRatio>1?1.5:1;c.width=LW*r;c.height=LH*r;fx.r=r}
+ const c=$('fx'),r=(devicePixelRatio>1&&!matchMedia('(pointer:coarse)').matches)?1.5:1;c.width=LW*r;c.height=LH*r;fx.r=r}
 
 /* ---------- troca de slide com onda de água ---------- */
 function ativar(n,de,volta){S.forEach((s,j)=>{s.classList.remove('sai','entra','volta');if(j!==n&&j!==de)s.classList.remove('on')});const s=S[n];
